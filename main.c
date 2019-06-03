@@ -14,39 +14,41 @@
  */
 char* nextWord(FILE* file)
 {
-    int maxLength = 16;
-    int length = 0;
-    char* word = malloc(sizeof(char) * maxLength);
-//Fix me: Do the necessary change to make the implementation //case-insensitive  
-   while (1) 
-    {
-        char c = fgetc(file);
-        if ((c >= '0' && c <= '9') ||
-            (c >= 'A' && c <= 'Z') ||
-            (c >= 'a' && c <= 'z') ||
-            c == '\'')  
-        {
-            if (length + 1 >= maxLength)
-            {
-                maxLength *= 2;
-                word = realloc(word, maxLength);
-            }
-            // .............
-            word[length] = c;
-            length++;
-        }
-        else if (length > 0 || c == EOF)
-        {
-            break;
-        }
-    }
-    if (length == 0)
-    {
-        free(word);
-        return NULL;
-    }
-    word[length] = '\0';
-    return word;
+	int maxLength = 16;
+	int length = 0;
+	char* word = malloc(sizeof(char) * maxLength);
+
+	while (1)
+	{
+		char c = fgetc(file);
+		if ((c >= '0' && c <= '9') ||
+		    (c >= 'A' && c <= 'Z') ||
+		    (c >= 'a' && c <= 'z') ||
+		    c == '\'')
+		{
+			if (length + 1 >= maxLength)
+			{
+				maxLength *= 2;
+				word = realloc(word, maxLength);
+			}
+			if (isupper(c)) {
+				c = tolower(c);
+			}
+			word[length] = c;
+			length++;
+		}
+		else if (length > 0 || c == EOF)
+		{
+			break;
+		}
+	}
+	if (length == 0)
+	{
+		free(word);
+		return NULL;
+	}
+	word[length] = '\0';
+	return word;
 }
 
 /**
@@ -59,31 +61,50 @@ char* nextWord(FILE* file)
  */
 int main(int argc, const char** argv)
 {
-    // FIXME: implement
-    const char* fileName = "input1.txt";
-    if (argc > 1)
-    {
-        fileName = argv[1];
-    }
-    printf("Opening file: %s\n", fileName);
-    
-    clock_t timer = clock();
-    
-    HashMap* map = hashMapNew(10);
-    
-    // --- Concordance code begins here ---
-    // Be sure to free the word after you are done with it here.
-    // --- Concordance code ends here ---
-    
-    
-    
-    timer = clock() - timer;
-    printf("\nRan in %f seconds\n", (float)timer / (float)CLOCKS_PER_SEC);
-    printf("Empty buckets: %d\n", hashMapEmptyBuckets(map));
-    printf("Number of links: %d\n", hashMapSize(map));
-    printf("Number of buckets: %d\n", hashMapCapacity(map));
-    printf("Table load: %f\n", hashMapTableLoad(map));
-    
-    hashMapDelete(map);
-    return 0;
+	const char* fileName = "input1.txt";
+	if (argc > 1)
+	{
+		fileName = argv[1];
+	}
+	printf("Opening file: %s\n", fileName);
+
+	clock_t timer = clock();
+
+	HashMap* map = hashMapNew(10);
+
+	// --- Concordance code begins here ---
+	FILE* file = fopen(fileName, "r");
+	assert(file != NULL);
+
+	char* word = nextWord(file);
+	int* currentCount;
+
+	while (word != NULL) {
+		currentCount = hashMapGet(map, word);
+
+		if (currentCount) {
+			// Incremement the count by 1 if the word was already in the hash map
+			*currentCount += 1;
+		} else {
+			// Insert the word with a count of 1
+			hashMapPut(map, word, 1);
+		}
+		free(word);
+		word = nextWord(file);
+	}
+
+	fclose(file);
+
+	hashMapPrint(map);
+	// --- Concordance code ends here ---
+
+	timer = clock() - timer;
+	printf("\nRan in %f seconds\n", (float)timer / (float)CLOCKS_PER_SEC);
+	printf("Empty buckets: %d\n", hashMapEmptyBuckets(map));
+	printf("Number of links: %d\n", hashMapSize(map));
+	printf("Number of buckets: %d\n", hashMapCapacity(map));
+	printf("Table load: %f\n", hashMapTableLoad(map));
+
+	hashMapDelete(map);
+	return 0;
 }
