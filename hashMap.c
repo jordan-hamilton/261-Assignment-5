@@ -393,24 +393,29 @@ void hashMapPrint(HashMap* map)
 {
 	assert(map != NULL);
 	HashLink* currentLink;
-	// Loop through the table
-	for (int i = 0; i < hashMapCapacity(map); i++) {
-		// Look at the first link in each bucket, then loop through
-		// and print the linked list until there are no additional
-		// links to print in this bucket.
-		currentLink = map->table[i];
-		printf("\nBucket #%d of %d:\n", i + 1, hashMapCapacity(map));
+	printf("\n");
+	if (hashMapSize(map) == 0) {
+		// If there are no links, print a message stating so without
+		// looping through each bucket
+		printf("Empty\n");
+	} else {
+		// Loop through the table if it's not empty, printing each link in each bucket
+		for (int i = 0; i < hashMapCapacity(map); i++) {
+			// Look at the first link in each bucket, then loop through
+			// and print the linked list until there are no additional
+			// links to print in this bucket.
+			currentLink = map->table[i];
 
-		if (currentLink != NULL) {
-			while(currentLink != NULL) {
-				printf("Key: %s - Value: %d\n", currentLink->key, currentLink->value);
-				currentLink = currentLink->next;
+			if (currentLink != NULL) {
+				printf("Bucket %d", i);
+
+				while(currentLink != NULL) {
+					printf(" -> (%s, %d)", currentLink->key, currentLink->value);
+					currentLink = currentLink->next;
+				}
+
+				printf("\n");
 			}
-		} else {
-			printf("Empty\n");
 		}
-
 	}
-
-
 }
