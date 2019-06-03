@@ -183,6 +183,7 @@ void resizeTable(HashMap* map, int capacity)
 		HashLink* currentLink = map->table[i];
 		while (currentLink != NULL) {
 			hashMapPut(tempMap, currentLink->key, currentLink->value);
+			currentLink = currentLink->next;
 		}
 	}
 
@@ -230,6 +231,7 @@ void hashMapPut(HashMap* map, const char* key, int value)
 
 		//Create a new link and put it at the front of the linked list
 		HashLink* currentLink = map->table[idx];
+
 		HashLink* newLink = hashLinkNew(key, value, currentLink);
 		assert(newLink != NULL);
 
