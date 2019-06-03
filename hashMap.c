@@ -280,7 +280,12 @@ void hashMapRemove(HashMap* map, const char* key)
 				// Update the next pointer of the previous link to maintain the linked
 				// list before deleting the current link.
 				prevLink->next = currentLink->next;
+			} else {
+				// If we were looking at the first link in the bucket, make sure the
+				// first link points to the next link
+				map->table[idx] = currentLink->next;
 			}
+
 			// Delete the link and decrease the size of the hash map
 			hashLinkDelete(currentLink);
 			map->size--;
