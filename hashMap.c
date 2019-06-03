@@ -392,7 +392,7 @@ void hashMapPrint(HashMap* map)
 		// and print the linked list until there are no additional
 		// links to print in this bucket.
 		currentLink = map->table[i];
-		printf("Bucket %d of %d:\n", i + 1, hashMapCapacity(map));
+		printf("\nBucket #%d of %d:\n", i + 1, hashMapCapacity(map));
 
 		if (currentLink != NULL) {
 			while(currentLink != NULL) {
@@ -400,7 +400,7 @@ void hashMapPrint(HashMap* map)
 				currentLink = currentLink->next;
 			}
 		} else {
-			printf("Empty");
+			printf("Empty\n");
 		}
 
 	}
