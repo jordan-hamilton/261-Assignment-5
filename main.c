@@ -1,3 +1,10 @@
+/*
+ * CS 261 Data Structures
+ * Assignment 5
+ * Name: Jordan Hamilton
+ * Date: June 3, 2019
+ */
+
 #include "hashMap.h"
 #include <stdlib.h>
 #include <stdio.h>
